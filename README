@@ -1,0 +1,9 @@
+The Super Tiny Compiler Python Edition
+
+Compiles Lisp style functions to C-style functions
+
+e.g.
+
+(add 2 3)              -> add(2, 3)
+(subtract 5 1)         -> subtract(5, 1)
+(add (subtract 5 1) 2) -> add( subtract(5, 1), 2)
