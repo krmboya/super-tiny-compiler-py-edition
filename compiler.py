@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Compiles Lisp style functions to C-style functions
 
@@ -61,3 +62,26 @@ def tokenizer(input_str):
         raise Exception("Unknown token")
 
     return tokens
+
+
+def parser(tokens):
+    return tokens
+
+
+def transformer(ast):
+    return ast
+
+
+def code_generator(new_ast):
+    return new_ast
+
+
+def compiler(src):
+    output = code_generator(transformer(parser(tokenizer(src))))
+    return output
+
+
+if __name__ == "__main__":
+    src = "(add (subtract 5 1) 2)"
+    output = compiler(src)
+    print output
