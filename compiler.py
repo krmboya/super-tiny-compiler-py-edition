@@ -10,12 +10,13 @@ e.g.
 """
 import re
 
+
 def tokenizer(input_str):
     """Returns a list of tokens from source string
 
     Process each character in the input and return a list
     of tokens representing the relevant ones.
-    
+
     Each token is of type `paren`, `number` or `name`, and with
     an associated value. Whitespace in the input is ignored"""
 
@@ -30,7 +31,7 @@ def tokenizer(input_str):
                 dict(type="paren", value=input_str[0])
             )
             input_str = input_str[1:]  # remove the processed section loop
-            continue                   
+            continue
 
         # check for whitespace
         whitespace_match = re.match(r'\s+', input_str)

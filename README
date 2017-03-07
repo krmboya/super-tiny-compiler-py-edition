@@ -6,4 +6,4 @@ e.g.
 
 (add 2 3)              -> add(2, 3)
 (subtract 5 1)         -> subtract(5, 1)
-(add (subtract 5 1) 2) -> add( subtract(5, 1), 2)
+(add (subtract 5 1) 2) -> add(subtract(5, 1), 2)
