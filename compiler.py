@@ -66,7 +66,25 @@ def tokenizer(input_str):
 
 
 def parser(tokens):
-    return tokens
+    """Converts token list to abstract syntax tree"""
+
+    def walk(position):
+        """Returns ast nodes as encountered in token list"""
+        # todo: write walk function
+        pass
+
+    # Root of the AST, node type 'program'
+    ast = {
+        "type": "program",
+        "body": []
+    }
+
+    position = 0
+    while position < len(tokens):
+        nodes, position = walk(tokens)
+        ast.body.extend(nodes)
+
+    return ast
 
 
 def transformer(ast):
