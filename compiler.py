@@ -18,14 +18,19 @@ def tokenizer(input_str):
     of tokens representing the relevant ones.
 
     Each token is of type `paren`, `number` or `name`, and with
-    an associated value. Whitespace in the input is ignored"""
+    an associated value. e.g.
+
+    {"type": "paren", "value": "("}
+
+    Whitespace in the input is ignored
+    """
 
     tokens = []
 
     while input_str:
         # loops while there's still unprocessed input
 
-        # check for parens
+        # check for paren
         if input_str[0] in ('(', ')',):
             tokens.append(
                 dict(type="paren", value=input_str[0])
@@ -66,12 +71,90 @@ def tokenizer(input_str):
 
 
 def parser(tokens):
-    """Converts token list to abstract syntax tree"""
+    """Converts token list to abstract syntax tree
+
+    AST node types
+
+    program:
+    {
+        "type": "program",
+        "body": []
+    }
+
+    number_literal:
+    {
+        "type": 'number_literal',
+        "value": ""
+    }
+ 
+    call_expression:
+    {
+        "type": "call_expression",
+        "name": "",
+        "params": []
+    }
+    """
 
     def walk(position):
-        """Returns ast nodes as encountered in token list"""
-        # todo: write walk function
-        pass
+        """Parses the tokens starting from given position to AST node
+
+        Returns the AST node and next position to resume parsing
+        """
+
+        token = tokens[position]
+        if token["type"] == "number":
+            # create a number_literal node type
+            node = {
+                "type": "number_literal",
+                "value": token["value"]
+            }
+
+            # increment position and return
+            position += 1
+            return node, position
+
+        if token["type"] == "paren" and token["value"] == "(":
+            # Opening paren, this means we're beginning a new
+            # call expression node.
+            # Bulk of the parsing occurs here
+
+            # increment position to get to the expression's name
+            position += 1
+            token = tokens[position]
+
+            # begin call expression node
+            call_expression_node = {
+                "type": "call_expression",
+                "name": token["value"],
+                "params": []
+            }
+
+            # gather all the expression's params
+            position += 1
+            token = tokens[position]
+
+            # peek until we see a closing paren...
+            while (token["type"] != "paren" or
+                   (token["type"] == "paren" and
+                    token["value"] != ")")):
+
+                # Since a param could either be a could be a nested call
+                # expression or a number, we call walk() recursively
+                # for each param
+                param_node, position = walk(position)
+                call_expression_node["params"].append(param_node)
+
+                token = tokens[position]
+
+            # End of call expression node. Return the node and the
+            # next position resume parsing
+            position += 1
+            return call_expression_node, position
+
+        # neither number nor opening paren
+        msg = ("Unexpected token:" + token["type"] +
+               " with value:" + token["value"])
+        raise Exception(msg)
 
     # Root of the AST, node type 'program'
     ast = {
@@ -81,8 +164,11 @@ def parser(tokens):
 
     position = 0
     while position < len(tokens):
-        nodes, position = walk(tokens)
-        ast.body.extend(nodes)
+        # until we exhaust all tokens
+
+        # get AST node starting at position
+        node, position = walk(position)
+        ast["body"].append(node)
 
     return ast
 
